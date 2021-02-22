@@ -9,7 +9,7 @@ def navigate_rovers(plateau_size, rovers)
 
   unless rovers.map { |rover| rover[:start_position].fetch_values(:x, :y) }.length ==
           rovers.map { |rover| rover[:start_position].fetch_values(:x, :y) }.uniq.length
-    puts 'Multiple rovers could not have the same start positions'
+    puts 'Multiple rovers could not have the same start positions.'
     return
   end
 
@@ -53,7 +53,7 @@ def navigate_rovers(plateau_size, rovers)
         end
 
         # Don't move the current rover to a cell occupied by one of the previously moved rovers.
-        unless rovers_positions.map { |p| p.fetch_values(:x, :y) }.include?(next_position.values)
+        unless rovers_positions.compact.map { |p| p.fetch_values(:x, :y) }.include?(next_position.values)
           current_position[:x] = (0..plateau_size[:w]).include?(next_position[:x]) ? next_position[:x] : current_position[:x]
           current_position[:y] = (0..plateau_size[:h]).include?(next_position[:y]) ? next_position[:y] : current_position[:y]
         end
@@ -63,7 +63,7 @@ def navigate_rovers(plateau_size, rovers)
     rovers_positions << current_position
   end
 
-  puts rovers_positions
+  p rovers_positions
 end
 
 # Examples:
@@ -100,6 +100,34 @@ navigate_rovers(
   [
     {
       start_position: { x: 1, y: 2, direction: 'N' },
+      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+    },
+    {
+      start_position: { x: 3, y: 3, direction: 'E' },
+      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+    }
+  ]
+)
+
+navigate_rovers(
+  { w: 5, h: 5 },
+  [
+    {
+      start_position: { x: 1, y: 2, direction: 'N' },
+      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+    },
+    {
+      start_position: { x: 1, y: 2, direction: 'E' },
+      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+    }
+  ]
+)
+
+navigate_rovers(
+  { w: 5, h: 5 },
+  [
+    {
+      start_position: { x: 1, y: 2 },
       instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
     },
     {
