@@ -54,6 +54,7 @@ def navigate_rovers(plateau_size, rovers)
 
         # Don't move the current rover to a cell occupied by one of the previously moved rovers.
         unless rovers_positions.compact.map { |p| p.fetch_values(:x, :y) }.include?(next_position.fetch_values(:x, :y))
+          # Don't move the current rover outside of the plateau.
           current_position[:x] = (0..plateau_size[:w]).include?(next_position[:x]) ? next_position[:x] : current_position[:x]
           current_position[:y] = (0..plateau_size[:h]).include?(next_position[:y]) ? next_position[:y] : current_position[:y]
         end
