@@ -27,33 +27,49 @@ def navigate_rovers(plateau_size, rovers)
       next
     end
 
-    current_position = rover[:start_position]
-
+    current_position = rover[:start_position].clone
+# puts 'first current_position '
+# puts current_position
     rover[:instructions].each do |inst|
       next unless ['L', 'R', 'M'].include?(inst)
 
       current_direction = current_position[:direction]
-      next_position = {}
-
+      next_position = current_position.clone
+      # puts 'second current_position '
+      # puts current_position
       case inst
       when 'L'
         current_position[:direction] = left_directions[left_directions.index(current_direction) - 1]
       when 'R'
         current_position[:direction] = right_directions[right_directions.index(current_direction) - 1]
       when 'M'
+        # puts '4th current_position '
+        # puts current_position
         case current_position[:direction]
         when 'N'
-          next_position[:y] = current_position[:y] + 1
+          next_position[:y] += 1
         when 'E'
-          next_position[:x] = current_position[:x] + 1
+          next_position[:x] += 1
         when 'S'
-          next_position[:y] = current_position[:y] - 1
+          next_position[:y] -= 1
         when 'W'
-          next_position[:x] = current_position[:x] - 1
+          # p 'fuck'
+          # puts '5th current_position '
+          # puts current_position
+          next_position[:x] -= 1
+          # puts '6th current_position '
+          # puts current_position
         end
-
+# puts 'third current_position '
+# puts current_position
+# p rovers_positions
+# p rovers_positions.compact.map { |p| p.fetch_values(:x, :y) }
+# p next_position.fetch_values(:x, :y)
+# p rovers_positions.compact.map { |p| p.fetch_values(:x, :y) }.include?(next_position.fetch_values(:x, :y))
+# p (0..plateau_size[:w]).include?(next_position[:x]) ? next_position[:x] : current_position[:x]
+# p (0..plateau_size[:h]).include?(next_position[:y]) ? next_position[:y] : current_position[:y]
         # Don't move the current rover to a cell occupied by one of the previously moved rovers.
-        unless rovers_positions.compact.map { |p| p.fetch_values(:x, :y) }.include?(next_position.values)
+        unless rovers_positions.compact.map { |p| p.fetch_values(:x, :y) }.include?(next_position.fetch_values(:x, :y))
           current_position[:x] = (0..plateau_size[:w]).include?(next_position[:x]) ? next_position[:x] : current_position[:x]
           current_position[:y] = (0..plateau_size[:h]).include?(next_position[:y]) ? next_position[:y] : current_position[:y]
         end
@@ -80,59 +96,101 @@ navigate_rovers(
     }
   ]
 )
-
-navigate_rovers(
-  { w: 5, a: 5 },
-  [
-    {
-      start_position: { x: 1, y: 2, direction: 'N' },
-      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
-    },
-    {
-      start_position: { x: 3, y: 3, direction: 'E' },
-      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
-    }
-  ]
-)
-
-navigate_rovers(
-  { w: 5, h: 'q' },
-  [
-    {
-      start_position: { x: 1, y: 2, direction: 'N' },
-      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
-    },
-    {
-      start_position: { x: 3, y: 3, direction: 'E' },
-      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
-    }
-  ]
-)
+#
+# navigate_rovers(
+#   { w: 5, a: 5 },
+#   [
+#     {
+#       start_position: { x: 1, y: 2, direction: 'N' },
+#       instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+#     },
+#     {
+#       start_position: { x: 3, y: 3, direction: 'E' },
+#       instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+#     }
+#   ]
+# )
+#
+# navigate_rovers(
+#   { w: 5, h: 'q' },
+#   [
+#     {
+#       start_position: { x: 1, y: 2, direction: 'N' },
+#       instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+#     },
+#     {
+#       start_position: { x: 3, y: 3, direction: 'E' },
+#       instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+#     }
+#   ]
+# )
+#
+# navigate_rovers(
+#   { w: 5, h: 5 },
+#   [
+#     {
+#       start_position: { x: 1, y: 2, direction: 'N' },
+#       instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+#     },
+#     {
+#       start_position: { x: 1, y: 2, direction: 'E' },
+#       instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+#     }
+#   ]
+# )
+#
+# navigate_rovers(
+#   { w: 5, h: 5 },
+#   [
+#     {
+#       start_position: { x: 1, y: 2 },
+#       instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+#     },
+#     {
+#       start_position: { x: 3, y: 3, direction: 'E' },
+#       instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+#     }
+#   ]
+# )
+#
+# navigate_rovers(
+#   { w: 5, h: 5 },
+#   [
+#     {
+#       start_position: { x: 1, y: 2.3, direction: 'N' },
+#       instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+#     },
+#     {
+#       start_position: { x: 3, y: 3, direction: 'E' },
+#       instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+#     }
+#   ]
+# )
+#
+# navigate_rovers(
+#   { w: 5, h: 5 },
+#   [
+#     {
+#       start_position: { x: 1, y: 2, direction: 'N' },
+#       instructions: ['L', 'M', 'B', 'M', 'L', 'M', 'L', 'M', 'M']
+#     },
+#     {
+#       start_position: { x: 3, y: 3, direction: 'E' },
+#       instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+#     }
+#   ]
+# )
 
 navigate_rovers(
   { w: 5, h: 5 },
   [
     {
-      start_position: { x: 1, y: 2, direction: 'N' },
-      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+      start_position: { x: 0, y: 0, direction: 'N' },
+      instructions: ['M']
     },
     {
-      start_position: { x: 1, y: 2, direction: 'E' },
-      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
-    }
-  ]
-)
-
-navigate_rovers(
-  { w: 5, h: 5 },
-  [
-    {
-      start_position: { x: 1, y: 2 },
-      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
-    },
-    {
-      start_position: { x: 3, y: 3, direction: 'E' },
-      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+      start_position: { x: 1, y: 1, direction: 'W' },
+      instructions: ['M']
     }
   ]
 )
