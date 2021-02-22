@@ -1,14 +1,16 @@
 def navigate_rovers(plateau_size, rovers)
   # I know "plateau_size" is not the best name.
   unless plateau_size.keys.sort == [:h, :w] &&
-         plateau_size[:w].integer? &&
-         plateau_size[:h].integer?
-    return 'Wrong plateau size format.'
+         plateau_size[:w].is_a?(Integer) &&
+         plateau_size[:h].is_a?(Integer)
+    puts 'Wrong plateau size format.'
+    return
   end
 
   unless rovers.map { |rover| rover[:start_position].fetch_values(:x, :y) }.length ==
           rovers.map { |rover| rover[:start_position].fetch_values(:x, :y) }.uniq.length
-    return 'Multiple rovers could not have the same start positions'
+    puts 'Multiple rovers could not have the same start positions'
+    return
   end
 
   left_directions = ['N', 'E', 'S', 'W'].freeze
@@ -18,8 +20,8 @@ def navigate_rovers(plateau_size, rovers)
 
   rovers.each do |rover|
     unless rover[:start_position].keys.sort == [:direction, :x, :y] &&
-           rover[:start_position][:x].integer? &&
-           rover[:start_position][:y].integer? &&
+           rover[:start_position][:x].is_a?(Integer) &&
+           rover[:start_position][:y].is_a?(Integer) &&
            left_directions.include?(rover[:start_position][:direction])
       rovers_positions << nil
       next
@@ -64,9 +66,37 @@ def navigate_rovers(plateau_size, rovers)
   puts rovers_positions
 end
 
-# Example:
+# Examples:
 navigate_rovers(
   { w: 5, h: 5 },
+  [
+    {
+      start_position: { x: 1, y: 2, direction: 'N' },
+      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+    },
+    {
+      start_position: { x: 3, y: 3, direction: 'E' },
+      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+    }
+  ]
+)
+
+navigate_rovers(
+  { w: 5, a: 5 },
+  [
+    {
+      start_position: { x: 1, y: 2, direction: 'N' },
+      instructions: ['L', 'M', 'L', 'M', 'L', 'M', 'L', 'M', 'M']
+    },
+    {
+      start_position: { x: 3, y: 3, direction: 'E' },
+      instructions: ['M', 'M', 'R', 'M', 'M', 'R', 'M', 'R', 'R', 'M']
+    }
+  ]
+)
+
+navigate_rovers(
+  { w: 5, h: 'q' },
   [
     {
       start_position: { x: 1, y: 2, direction: 'N' },
